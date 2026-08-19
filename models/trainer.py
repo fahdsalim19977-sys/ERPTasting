@@ -16,7 +16,6 @@ class Trainer:
     
     @staticmethod
     def get_by_id(trainer_id):
-        """جلب مدرب حسب ID"""
         conn = get_db()
         trainer = conn.execute('SELECT * FROM trainers WHERE id = ?', (trainer_id,)).fetchone()
         conn.close()
@@ -26,14 +25,12 @@ class Trainer:
     
     @staticmethod
     def get_all():
-        """جلب جميع المدربين"""
         conn = get_db()
         trainers = conn.execute('SELECT * FROM trainers ORDER BY name').fetchall()
         conn.close()
         return [Trainer(trainer) for trainer in trainers]
 
 def create_tables():
-    """إنشاء جدول المدربين"""
     conn = get_db()
     cursor = conn.cursor()
     

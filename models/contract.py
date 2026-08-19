@@ -14,7 +14,6 @@ class ContractType:
     
     @staticmethod
     def get_all():
-        """جلب جميع أنواع العقود"""
         conn = get_db()
         types = conn.execute('SELECT * FROM contract_types ORDER BY name').fetchall()
         conn.close()
@@ -45,7 +44,6 @@ class Contract:
     
     @staticmethod
     def get_by_id(contract_id):
-        """جلب عقد حسب ID"""
         conn = get_db()
         contract = conn.execute('SELECT * FROM client_contracts WHERE id = ?', (contract_id,)).fetchone()
         conn.close()
@@ -55,7 +53,6 @@ class Contract:
     
     @staticmethod
     def get_by_client(client_id):
-        """جلب عقود عميل معين"""
         conn = get_db()
         contracts = conn.execute('''
             SELECT * FROM client_contracts WHERE client_id = ? ORDER BY created_at DESC
@@ -65,7 +62,6 @@ class Contract:
     
     @staticmethod
     def get_all():
-        """جلب جميع العقود"""
         conn = get_db()
         contracts = conn.execute('SELECT * FROM client_contracts ORDER BY created_at DESC').fetchall()
         conn.close()
@@ -75,7 +71,6 @@ class Contract:
     def create(client_id, contract_number, title, start_date, end_date, created_by,
                contract_type_id=None, description=None, contract_value=0, 
                total_amount=0, status='نشط', notes=None):
-        """إنشاء عقد جديد"""
         conn = get_db()
         cursor = conn.execute('''
             INSERT INTO client_contracts 
@@ -90,7 +85,6 @@ class Contract:
         return contract_id
     
     def get_payments(self):
-        """جلب دفعات العقد"""
         conn = get_db()
         payments = conn.execute('''
             SELECT * FROM contract_payments WHERE contract_id = ? ORDER BY installment_number ASC
@@ -99,7 +93,6 @@ class Contract:
         return [ContractPayment(p) for p in payments]
     
     def get_attachments(self):
-        """جلب مرفقات العقد"""
         conn = get_db()
         attachments = conn.execute('''
             SELECT ca.*, u.name as uploaded_by_name
@@ -128,7 +121,6 @@ class ContractPayment:
         self.updated_at = data.get('updated_at')
     
     def mark_paid(self, paid_amount, payment_date=None):
-        """تحديد الدفعة كمدفوعة"""
         if not payment_date:
             payment_date = datetime.now().strftime('%Y-%m-%d')
         
@@ -151,7 +143,6 @@ class ContractPayment:
         self._update_contract_status()
     
     def _update_contract_status(self):
-        """تحديث حالة العقد بناءً على الدفعات"""
         conn = get_db()
         
         total_paid = conn.execute('''
@@ -195,11 +186,9 @@ class ContractAttachment:
         self.created_at = data['created_at']
 
 def create_tables():
-    """إنشاء جداول العقود"""
     conn = get_db()
     cursor = conn.cursor()
     
-    # ===== جدول أنواع العقود =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS contract_types (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -210,7 +199,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول العقود =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS client_contracts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -234,7 +222,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول دفعات العقود =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS contract_payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -251,7 +238,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول مرفقات العقود =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS contract_attachments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -266,7 +252,6 @@ def create_tables():
         )
     """)
     
-    # ===== أنواع العقود الافتراضية =====
     cursor.execute("SELECT COUNT(*) as count FROM contract_types")
     if cursor.fetchone()[0] == 0:
         cursor.execute("""

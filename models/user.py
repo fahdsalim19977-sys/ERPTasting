@@ -3,16 +3,12 @@ from .base import get_db
 import hashlib
 import bcrypt
 
-# ===== دوال التشفير =====
 def hash_password(password):
-    """تشفير كلمة المرور"""
     return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_password(password, hashed):
-    """التحقق من كلمة المرور"""
     return hash_password(password) == hashed
 
-# ===== كلاس المستخدم =====
 class User:
     """نموذج المستخدم"""
     
@@ -28,7 +24,6 @@ class User:
     
     @staticmethod
     def get_by_id(user_id):
-        """جلب مستخدم حسب ID"""
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE id = ?', (user_id,)).fetchone()
         conn.close()
@@ -38,7 +33,6 @@ class User:
     
     @staticmethod
     def get_by_username(username):
-        """جلب مستخدم حسب اسم المستخدم"""
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
         conn.close()
@@ -48,7 +42,6 @@ class User:
     
     @staticmethod
     def get_all():
-        """جلب جميع المستخدمين"""
         conn = get_db()
         users = conn.execute('SELECT * FROM users ORDER BY created_at DESC').fetchall()
         conn.close()
@@ -56,7 +49,6 @@ class User:
     
     @staticmethod
     def create(username, name, email, password, role):
-        """إنشاء مستخدم جديد"""
         conn = get_db()
         try:
             conn.execute('''
@@ -69,24 +61,11 @@ class User:
             return False
         finally:
             conn.close()
-    
-    def has_permission(self, permission_name):
-        """التحقق من وجود صلاحية للمستخدم"""
-        from models import has_permission
-        return has_permission(self.id, permission_name)
-    
-    def get_permissions(self):
-        """جلب جميع صلاحيات المستخدم"""
-        from models import get_user_permissions
-        return get_user_permissions(self.id)
 
-# ===== دوال إدارة الصلاحيات =====
 def create_tables():
-    """إنشاء جداول المستخدمين والصلاحيات"""
     conn = get_db()
     cursor = conn.cursor()
     
-    # ===== جدول المستخدمين =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,7 +79,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول الصلاحيات =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS permissions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -112,7 +90,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول الأدوار =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS roles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -123,7 +100,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول صلاحيات الأدوار =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS role_permissions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -136,7 +112,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول صلاحيات المستخدمين =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS user_permissions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -151,7 +126,7 @@ def create_tables():
         )
     """)
     
-    # ===== إضافة الصلاحيات الافتراضية =====
+    # ===== الصلاحيات الافتراضية =====
     default_permissions = [
         ('tasks.view', 'tasks', 'view', 'عرض المهام'),
         ('tasks.create', 'tasks', 'create', 'إنشاء مهام'),
@@ -182,7 +157,7 @@ def create_tables():
             VALUES (?, ?, ?, ?)
         """, (perm_name, resource, action, description))
     
-    # ===== إضافة الأدوار الافتراضية =====
+    # ===== الأدوار الافتراضية =====
     default_roles = [
         ('مدير', 'مدير النظام - لديه جميع الصلاحيات', 0),
         ('موظف', 'موظف عادي - صلاحيات محدودة', 1),
@@ -195,7 +170,7 @@ def create_tables():
             VALUES (?, ?, ?)
         """, (role_name, description, is_default))
     
-    # ===== إضافة المستخدمين الافتراضيين =====
+    # ===== المستخدمين الافتراضيين =====
     cursor.execute("SELECT * FROM users WHERE username = 'Adminerp'")
     if not cursor.fetchone():
         cursor.execute("""
@@ -230,7 +205,6 @@ def create_tables():
     for row in cursor.fetchall():
         perms_map[row[1]] = row[0]
     
-    # صلاحيات المدير
     if 'مدير' in roles_map:
         for perm_id in perms_map.values():
             cursor.execute("""

@@ -21,7 +21,6 @@ class Payment:
     
     @staticmethod
     def get_by_id(payment_id):
-        """جلب دفعة حسب ID"""
         conn = get_db()
         payment = conn.execute('SELECT * FROM client_payments WHERE id = ?', (payment_id,)).fetchone()
         conn.close()
@@ -31,7 +30,6 @@ class Payment:
     
     @staticmethod
     def get_by_client(client_id):
-        """جلب دفعات عميل معين"""
         conn = get_db()
         payments = conn.execute('''
             SELECT * FROM client_payments WHERE client_id = ? ORDER BY created_at DESC
@@ -41,7 +39,6 @@ class Payment:
     
     @staticmethod
     def get_all():
-        """جلب جميع الدفعات"""
         conn = get_db()
         payments = conn.execute('SELECT * FROM client_payments ORDER BY created_at DESC').fetchall()
         conn.close()
@@ -51,7 +48,6 @@ class Payment:
     def create(client_id, amount, payment_date, created_by, module_id=None,
                due_date=None, payment_method='نقدي', status='معلق',
                invoice_number=None, notes=None):
-        """إنشاء دفعة جديدة"""
         conn = get_db()
         cursor = conn.execute('''
             INSERT INTO client_payments 
@@ -66,7 +62,6 @@ class Payment:
         return payment_id
     
     def update(self, **kwargs):
-        """تحديث بيانات الدفعة"""
         conn = get_db()
         set_clause = []
         values = []
@@ -87,7 +82,6 @@ class Payment:
         return False
     
     def delete(self):
-        """حذف الدفعة"""
         conn = get_db()
         conn.execute('DELETE FROM client_payments WHERE id = ?', (self.id,))
         conn.commit()
@@ -111,7 +105,6 @@ def create_tables():
     conn = get_db()
     cursor = conn.cursor()
     
-    # ===== جدول المدفوعات =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS client_payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,7 +122,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول الدفعات المقسمة =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS payment_installments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

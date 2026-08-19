@@ -6,7 +6,6 @@ import os
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    
     app.secret_key = os.environ.get('SECRET_KEY') or 'dev-secret-key'
     
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)

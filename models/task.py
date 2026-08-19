@@ -27,7 +27,6 @@ class Task:
     
     @staticmethod
     def get_by_id(task_id):
-        """جلب مهمة حسب ID"""
         conn = get_db()
         task = conn.execute('SELECT * FROM tasks WHERE id = ?', (task_id,)).fetchone()
         conn.close()
@@ -37,7 +36,6 @@ class Task:
     
     @staticmethod
     def get_by_client(client_id):
-        """جلب مهام عميل معين"""
         conn = get_db()
         tasks = conn.execute('''
             SELECT * FROM tasks WHERE client_id = ? ORDER BY due_date ASC
@@ -47,7 +45,6 @@ class Task:
     
     @staticmethod
     def get_all():
-        """جلب جميع المهام"""
         conn = get_db()
         tasks = conn.execute('SELECT * FROM tasks ORDER BY due_date ASC').fetchall()
         conn.close()
@@ -58,7 +55,6 @@ class Task:
                trainer_id=None, description=None, priority='متوسطة', 
                estimated_duration=0, meeting_id=None, task_group=None, 
                contract_payment_id=None):
-        """إنشاء مهمة جديدة"""
         conn = get_db()
         cursor = conn.execute('''
             INSERT INTO tasks (client_id, created_by, assigned_user_id, trainer_id, 
@@ -76,7 +72,6 @@ class Task:
         return task_id
     
     def update(self, **kwargs):
-        """تحديث بيانات المهمة"""
         conn = get_db()
         set_clause = []
         values = []
@@ -99,14 +94,12 @@ class Task:
         return False
     
     def delete(self):
-        """حذف المهمة"""
         conn = get_db()
         conn.execute('DELETE FROM tasks WHERE id = ?', (self.id,))
         conn.commit()
         conn.close()
     
     def get_updates(self):
-        """جلب تحديثات المهمة"""
         conn = get_db()
         updates = conn.execute('''
             SELECT tu.*, u.name as user_name
@@ -119,7 +112,6 @@ class Task:
         return [TaskUpdate(update) for update in updates]
     
     def add_update(self, user_id, note, attachment_path=None):
-        """إضافة تحديث للمهمة"""
         conn = get_db()
         conn.execute('''
             INSERT INTO task_updates (task_id, user_id, note, attachment_path)
@@ -141,11 +133,9 @@ class TaskUpdate:
         self.created_at = data['created_at']
 
 def create_tables():
-    """إنشاء جداول المهام"""
     conn = get_db()
     cursor = conn.cursor()
     
-    # ===== جدول المهام =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -169,7 +159,6 @@ def create_tables():
         )
     """)
     
-    # ===== جدول تحديثات المهام =====
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS task_updates (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
