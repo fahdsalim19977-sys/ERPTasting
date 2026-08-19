@@ -23,13 +23,20 @@ def get_db():
     return conn
 
 def hash_password(password):
-    """تشفير كلمة المرور باستخدام bcrypt"""
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+    """تشفير كلمة المرور باستخدام SHA-256"""
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_password(password, hashed):
-    """التحقق من كلمة المرور"""
-    return hashlib.sha256(password.encode()).hexdigest() == hashed
+    """التحقق من كلمة المرور - يدعم bcrypt و SHA-256"""
+    # إذا كانت مشفرة بـ bcrypt (تبدأ بـ $2b$)
+    if hashed and hashed.startswith('$2b$'):
+        try:
+            return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        except:
+            return False
+    else:
+        # SHA-256 (الصيغة القديمة)
+        return hashlib.sha256(password.encode()).hexdigest() == hashed
 
 def get_user_permissions(user_id):
     """جلب جميع صلاحيات المستخدم (من دوره + صلاحياته الخاصة)"""
