@@ -1,10 +1,11 @@
+# routes/auth.py
 # app/routes/auth.py
 from flask import render_template, request, redirect, url_for, session, flash
 from models import get_db, verify_password, hash_password
 from app.routes import auth_bp
 from utils import get_company_settings, log_activity
-from app.routes import clients_bp
 
+# لا تستورد أي شيء من app.routes باستثناء auth_bp
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -38,23 +39,3 @@ def login():
     
     settings = get_company_settings()
     return render_template('login.html', settings=settings)
-
-@auth_bp.route('/logout')
-def logout():
-    try:
-        if 'user_id' in session:
-            log_activity(session['user_id'], 'تسجيل خروج', '')
-        session.clear()
-        flash('✅ تم تسجيل الخروج بنجاح', 'success')
-        return redirect(url_for('auth.login'))
-    except Exception as e:
-        print(f"Error in logout: {str(e)}")
-        session.clear()
-        return redirect(url_for('auth.login'))
-
-@auth_bp.route('/set_lang/<lang>')
-def set_lang(lang):
-    if lang in ['ar', 'en']:
-        session['lang'] = lang
-        flash(f'✅ تم تغيير اللغة إلى {lang}', 'success')
-    return redirect(request.referrer or url_for('index'))
