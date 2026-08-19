@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from models import get_db
 from routes import settings_bp
 from utils import check_role, log_activity, get_company_settings
-from config import Config
+from app.config import Config
 
 @settings_bp.route('/company_settings', methods=['GET', 'POST'])
 def company_settings():

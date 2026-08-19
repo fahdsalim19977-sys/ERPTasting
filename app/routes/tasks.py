@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import math
 from models import get_db
-from routes import tasks_bp
+from app.routes import tasks_bp
 from utils import log_activity, check_role
 from utils.decorators import login_required, role_required, permission_required
 
