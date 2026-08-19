@@ -1,15 +1,15 @@
-﻿# models.py
+# models.py - بداية الملف
 import os
 import sqlite3
 from datetime import datetime
 import hashlib
 import bcrypt
 
-# ===== استخدام Persistent Storage =====
-DB_PATH = '/app/data/tasks.db'
+# ===== مسار قاعدة البيانات =====
+DB_PATH = '/app/data/tasks.db'  # ✅ هذا السطر مهم جداً
 
 # ===== لو على جهاز محلي =====
-if not os.path.exists('/app/data/tasks.db'):
+if not os.path.exists('/app/data'):
     DB_PATH = 'tasks.db'
 
 def get_db():
