@@ -9,7 +9,7 @@ import bcrypt
 DB_PATH = '/app/data/tasks.db'
 
 # ===== لو على جهاز محلي =====
-if not os.path.exists('/app/data'):
+if not os.path.exists('/app/data/tasks.db'):
     DB_PATH = 'tasks.db'
 
 def get_db():
