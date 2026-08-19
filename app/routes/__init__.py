@@ -14,6 +14,3 @@ meetings_bp = Blueprint('meetings', __name__, url_prefix='/')
 reports_bp = Blueprint('reports', __name__, url_prefix='/')
 settings_bp = Blueprint('settings', __name__, url_prefix='/')
 backups_bp = Blueprint('backups', __name__, url_prefix='/')
-
-# ===== ملاحظة: لا تستورد أي شيء من هنا =====
-# سيتم استيراد الـ Blueprints مباشرة في app/__init__.py

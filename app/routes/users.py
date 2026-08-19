@@ -4,7 +4,6 @@ import sqlite3
 from models import get_db, hash_password, get_user_permissions, has_permission, add_permission_to_user, remove_permission_from_user
 from app.routes import users_bp
 from utils import check_role, log_activity
-from app.routes import clients_bp
 
 @users_bp.route('/users')
 def users():
@@ -66,7 +65,6 @@ def delete_user(user_id):
 # ===== إدارة صلاحيات المستخدم =====
 @users_bp.route('/user_permissions/<int:user_id>')
 def user_permissions(user_id):
-    """عرض صلاحيات المستخدم"""
     if not check_role(['مدير']):
         flash('⛔ غير مصرح لك', 'danger')
         return redirect(url_for('index'))
@@ -131,7 +129,6 @@ def user_permissions(user_id):
 
 @users_bp.route('/toggle_permission/<int:user_id>/<int:permission_id>', methods=['POST'])
 def toggle_permission(user_id, permission_id):
-    """تفعيل/إلغاء صلاحية للمستخدم"""
     if not check_role(['مدير']):
         flash('⛔ غير مصرح لك', 'danger')
         return redirect(url_for('index'))
