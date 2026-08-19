@@ -26,14 +26,17 @@ class Config:
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or ''
 
 class DevelopmentConfig(Config):
+    """إعدادات بيئة التطوير"""
     DEBUG = True
     TESTING = False
 
 class TestingConfig(Config):
+    """إعدادات بيئة الاختبار"""
     DEBUG = False
     TESTING = True
     DB_PATH = 'test.db'
 
 class ProductionConfig(Config):
+    """إعدادات بيئة الإنتاج"""
     DEBUG = False
     TESTING = False
