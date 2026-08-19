@@ -10,7 +10,7 @@ DB_PATH = '/app/data/tasks.db'  # ✅ هذا السطر مهم جداً
 
 # ===== لو على جهاز محلي =====
 if not os.path.exists('/app/data'):
-    DB_PATH = 'tasks.db'
+    DB_PATH = '/app/data/tasks.db'
 
 def get_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
