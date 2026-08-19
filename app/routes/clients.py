@@ -1,8 +1,9 @@
 # routes/clients.py
 from flask import render_template, request, redirect, url_for, session, flash
-from models import get_db, Client
+from models import get_db
 from app.routes import clients_bp
 from utils import get_trainers, check_role, log_activity
+from datetime import datetime
 
 @clients_bp.route('/clients')
 def clients():
