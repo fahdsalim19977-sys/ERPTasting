@@ -3,6 +3,7 @@ from flask import render_template, request, redirect, url_for, session, flash
 from models import get_db, verify_password, hash_password
 from app.routes import auth_bp
 from utils import get_company_settings, log_activity
+from app.routes import clients_bp
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():

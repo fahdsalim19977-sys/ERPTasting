@@ -15,5 +15,5 @@ reports_bp = Blueprint('reports', __name__, url_prefix='/')
 settings_bp = Blueprint('settings', __name__, url_prefix='/')
 backups_bp = Blueprint('backups', __name__, url_prefix='/')
 
-# ===== استيراد المسارات =====
-from . import auth, users, clients, trainers, tasks, contracts, payments, modules, meetings, reports, settings, backups
+# ===== ملاحظة: لا تستورد أي شيء من هنا =====
+# سيتم استيراد الـ Blueprints مباشرة في app/__init__.py

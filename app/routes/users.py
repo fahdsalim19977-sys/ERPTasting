@@ -4,6 +4,7 @@ import sqlite3
 from models import get_db, hash_password, get_user_permissions, has_permission, add_permission_to_user, remove_permission_from_user
 from app.routes import users_bp
 from utils import check_role, log_activity
+from app.routes import clients_bp
 
 @users_bp.route('/users')
 def users():

@@ -22,6 +22,7 @@ def create_app(config_class=Config):
     return app
 
 def register_blueprints(app):
+    # ===== استيراد الـ Blueprints مباشرة من كل ملف =====
     from app.routes.auth import auth_bp
     from app.routes.users import users_bp
     from app.routes.clients import clients_bp
